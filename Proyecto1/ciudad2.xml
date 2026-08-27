@@ -1,0 +1,45 @@
+﻿<?xml version="1.0"?>
+<configuracion>
+	<listaCiudades>
+		<ciudad>
+			<nombre filas="15" columnas="20">Ciudad de Guatemala</nombre>
+			<fila numero="1">"********************"</fila>
+			<fila numero="2">"E      *           *"</fila>
+			<fila numero="3">"****** * ********* *"</fila>
+			<fila numero="4">"*      *     C   * *"</fila>
+			<fila numero="5">"* ****** * ***** * *"</fila>
+			<fila numero="6">"* R      *       * *"</fila>
+			<fila numero="7">"********** ******* *"</fila>
+			<fila numero="8">"E          *       *"</fila>
+			<fila numero="9">"********** * *******"</fila>
+			<fila numero="10">"*          * * C   *"</fila>
+			<fila numero="11">"* ********** * *** *"</fila>
+			<fila numero="12">"* * R        * *   *"</fila>
+			<fila numero="13">"* ************ * ***"</fila>
+			<fila numero="14">"E                  *"</fila>
+			<fila numero="15">"********************"</fila>
+
+			<!-- Unidades Militares que tu lector XML convertirá en celdas 'M' -->
+			<unidadMilitar fila="2" columna="11">40</unidadMilitar>
+			<unidadMilitar fila="6" columna="11">60</unidadMilitar>
+			<unidadMilitar fila="8" columna="6">30</unidadMilitar>
+			<unidadMilitar fila="10" columna="6">120</unidadMilitar>
+			<unidadMilitar fila="14" columna="10">100</unidadMilitar>
+		</ciudad>
+	</listaCiudades>
+
+	<robots>
+		<robot>
+			<nombre tipo="ChapinRescue">Bombero</nombre>
+		</robot>
+		<robot>
+			<nombre tipo="ChapinRescue">CruzRoja</nombre>
+		</robot>
+		<robot>
+			<nombre tipo="ChapinFighter" capacidad="90">Soldado-Raso</nombre>
+		</robot>
+		<robot>
+			<nombre tipo="ChapinFighter" capacidad="250">Bob</nombre>
+		</robot>
+	</robots>
+</configuracion>
