@@ -2,7 +2,7 @@
 <configuracion>
 	<listaCiudades>
 		<ciudad>
-			<nombre filas="15" columnas="20">Ciudad de Guatemala</nombre>
+			<nombre filas="15" columnas="20">Ciudad</nombre>
 			<fila numero="1">"********************"</fila>
 			<fila numero="2">"E      *           *"</fila>
 			<fila numero="3">"****** * ********* *"</fila>

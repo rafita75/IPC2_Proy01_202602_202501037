@@ -5,7 +5,6 @@ namespace Proyecto1
 {
     public class LectorXML
     {
-        // listas dinámicas
         private ListaCiudad ciudadesCargadas;
         private ListaRobot robotsCargados;
 
@@ -22,7 +21,7 @@ namespace Proyecto1
                 XmlDocument documento = new XmlDocument();
                 documento.Load(rutaArchivo);
 
-                //CARGAR ROBOTS
+                // CARGAR O ACTUALIZAR ROBOTS
                 XmlNodeList nodosRobot = documento.SelectNodes("//robots/robot");
                 if (nodosRobot != null)
                 {
@@ -33,18 +32,34 @@ namespace Proyecto1
                         string tipo = nodoNombre.Attributes["tipo"].Value;
 
                         int capacidad = 0;
-                        // Solo los ChapinFighter tienen atributo de capacidad
                         if (tipo == "ChapinFighter" && nodoNombre.Attributes["capacidad"] != null)
                         {
                             capacidad = int.Parse(nodoNombre.Attributes["capacidad"].Value);
                         }
 
                         Robot nuevoRobot = new Robot(nombre, tipo, capacidad);
-                        this.robotsCargados.Agregar(nuevoRobot);
+
+                        NodoRobot actualR = this.robotsCargados.GetCabeza();
+                        bool robotActualizado = false;
+                        while (actualR != null)
+                        {
+                            if (actualR.GetDato().GetNombre() == nombre)
+                            {
+                                actualR.SetDato(nuevoRobot); // Sobreescribe el objeto en memoria
+                                robotActualizado = true;
+                                break;
+                            }
+                            actualR = actualR.GetSiguiente();
+                        }
+
+                        if (!robotActualizado)
+                        {
+                            this.robotsCargados.Agregar(nuevoRobot); // Es nuevo, lo agrega al final
+                        }
                     }
                 }
 
-                // CARGAR CIUDADES Y SU MAPA
+                // CARGAR O ACTUALIZAR CIUDADES
                 XmlNodeList nodosCiudad = documento.SelectNodes("//listaCiudades/ciudad");
                 if (nodosCiudad != null)
                 {
@@ -57,29 +72,22 @@ namespace Proyecto1
 
                         Ciudad nuevaCiudad = new Ciudad(nombreCiudad, filas, columnas);
 
-                        // Cargar las filas y celdas
                         XmlNodeList nodosFila = nodoCiudad.SelectNodes("fila");
                         foreach (XmlNode nodoFila in nodosFila)
                         {
                             int numeroFila = int.Parse(nodoFila.Attributes["numero"].Value);
-                            // Limpiamos las comillas 
                             string contenidoFila = nodoFila.InnerText.Trim().Replace("\"", "");
 
                             ListaCelda nuevaListaFila = new ListaCelda();
-
-                            // Recorremos cada caracter (columna) 
                             for (int c = 0; c < contenidoFila.Length; c++)
                             {
                                 char tipoTerreno = contenidoFila[c];
                                 Celda nuevaCelda = new Celda(numeroFila, c + 1, tipoTerreno);
                                 nuevaListaFila.Agregar(nuevaCelda);
                             }
-
-                            // Agregamos la fila terminada a la matriz de la ciudad
                             nuevaCiudad.GetMalla().AgregarFila(nuevaListaFila);
                         }
 
-                        //  actualizamos las celdas con Unidades Militares
                         XmlNodeList nodosMilitares = nodoCiudad.SelectNodes("unidadMilitar");
                         if (nodosMilitares != null)
                         {
@@ -89,26 +97,40 @@ namespace Proyecto1
                                 int columnaMilitar = int.Parse(nodoMilitar.Attributes["columna"].Value);
                                 int capacidadCombate = int.Parse(nodoMilitar.InnerText.Trim());
 
-                                // Buscamos la celda específica en nuestra matriz dinámica
                                 Celda celdaObjetivo = nuevaCiudad.GetMalla().ObtenerCelda(filaMilitar, columnaMilitar);
                                 if (celdaObjetivo != null)
                                 {
-                                    celdaObjetivo.SetTipoTerreno('M'); 
+                                    celdaObjetivo.SetTipoTerreno('M');
                                     celdaObjetivo.SetCapacidadMilitar(capacidadCombate);
                                 }
                             }
                         }
 
-                        // agregamos la ciudad completa a nuestra lista de ciudades
-                        this.ciudadesCargadas.Agregar(nuevaCiudad);
+                        NodoCiudad actualC = this.ciudadesCargadas.GetCabeza();
+                        bool ciudadActualizada = false;
+                        while (actualC != null)
+                        {
+                            if (actualC.GetDato().GetNombre() == nombreCiudad)
+                            {
+                                actualC.SetDato(nuevaCiudad); // Sobreescribe la ciudad completa con su nuevo mapa
+                                ciudadActualizada = true;
+                                break;
+                            }
+                            actualC = actualC.GetSiguiente();
+                        }
+
+                        if (!ciudadActualizada)
+                        {
+                            this.ciudadesCargadas.Agregar(nuevaCiudad); // Es nueva, la agrega al final
+                        }
                     }
                 }
 
-                Console.WriteLine("¡Archivo cargado y procesado exitosamente en memoria dinámica!");
+                Console.WriteLine("\n¡Archivo procesado exitosamente (Nuevos registros agregados, existentes actualizados)!");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error al procesar el archivo XML: " + ex.Message);
+                Console.WriteLine("\nError al procesar el archivo XML: " + ex.Message);
             }
         }
     }
